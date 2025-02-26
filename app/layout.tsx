@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from 'next/headers';
 import { Inter, Roboto, Fira_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -26,17 +27,24 @@ export const metadata: Metadata = {
   description: "Live competition platform for the Centennial Informatics Tournament (CInT)",
 };
 
-export default function RootLayout({
+import Header from '@/app/components/header';
+import { SESSION_COOKIE_NAME } from '@/constants';
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = (await cookies()).get(SESSION_COOKIE_NAME)?.value || null;
   return (
     <html lang="en">
       <body
         className={`bg-gray-800 font-sans antialiased h-screen w-screen`}
       >
-        {children}
+        <div className="flex flex-col h-full w-full p-2">
+          <Header session={session} />
+          {children}
+        </div>
       </body>
     </html>
   );
