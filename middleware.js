@@ -11,8 +11,4 @@ export default function middleware(request) {
     return NextResponse.redirect(absoluteURL.toString());
   }
 
-  if (session && request.nextUrl.pathname === ROOT_ROUTE) {
-    const absoluteURL = new URL(HOME_ROUTE, request.nextUrl.origin);
-    return NextResponse.redirect(absoluteURL.toString());
-  }
 }

@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import { HOME_ROUTE, ROOT_ROUTE, SESSION_COOKIE_NAME } from '@/constants';
 
-export async function createSession(string) {
+export async function createSession(uid) {
   cookies().set(SESSION_COOKIE_NAME, uid, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -13,7 +13,7 @@ export async function createSession(string) {
     path: '/',
   });
 
-  redirect(HOME_ROUTE);
+  redirect("/");
 }
 
 export async function removeSession() {
