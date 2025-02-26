@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { HOME_ROUTE, ROOT_ROUTE, SESSION_COOKIE_NAME } from '@/constants';
 
 export async function createSession(uid) {
-  cookies().set(SESSION_COOKIE_NAME, uid, {
+  (await cookies()).set(SESSION_COOKIE_NAME, uid, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     maxAge: 60 * 60 * 24,
@@ -17,7 +17,7 @@ export async function createSession(uid) {
 }
 
 export async function removeSession() {
-  cookies().delete(SESSION_COOKIE_NAME);
+  (await cookies()).delete(SESSION_COOKIE_NAME);
 
   redirect(ROOT_ROUTE);
 }
