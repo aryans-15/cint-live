@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import { Inter, Roboto, Fira_Mono } from "next/font/google";
+import { cookies } from 'next/headers';
+import { Inter, Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -13,8 +13,7 @@ const roboto = Roboto({
   variable: "--font-roboto",
   weight: "400",
 });
-
-const firaMono = Fira_Mono({
+const firaMono = Roboto_Mono({
   subsets: ["latin"],
   variable: "--font-fira-mono",
   weight: "400",

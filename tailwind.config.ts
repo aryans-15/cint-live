@@ -88,12 +88,26 @@ export default {
 			},
 			transitionProperty: {
 				width: 'width'
+			},
+			animation: {
+				fadeIn: 'fadeIn 0.2s ease-in-out',
+				fadeOut: 'fadeOut 0.2s ease-in-out',
+			},
+			keyframes: {
+				fadeIn: {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' }
+				},
+				fadeOut: {
+					'0%': { opacity: '1' },
+					'100%': { opacity: '0' }
+				}
 			}
 		},
 		fontFamily: {
 			sans: ['Inter', 'Roboto', 'sans-serif'],
 			body: ['Roboto', 'Open Sans', 'sans-serif'],
-			mono: ['Fira Mono', 'monospace']
+			mono: ['Roboto Mono', 'sans-serif']
 		}
 	},
 	variants: {
