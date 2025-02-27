@@ -92,6 +92,7 @@ export default {
 			animation: {
 				fadeIn: 'fadeIn 0.2s ease-in-out',
 				fadeOut: 'fadeOut 0.2s ease-in-out',
+				'slide-in': 'slide-in 0.3s ease-out forwards'
 			},
 			keyframes: {
 				fadeIn: {
@@ -101,6 +102,10 @@ export default {
 				fadeOut: {
 					'0%': { opacity: '1' },
 					'100%': { opacity: '0' }
+				},
+				'slide-in': {
+					'0%': { transform: 'translateX(100%)' },
+					'100%': { transform: 'translateX(0)' }
 				}
 			}
 		},

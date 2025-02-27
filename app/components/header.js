@@ -98,7 +98,7 @@ export default function Header({ session }) {
                                 <div 
                                     ref={elementRef} 
                                     onClick={handleSignOut} 
-                                    className="absolute top-full left-0 w-full text-center py-2 bg-rose-600 text-white rounded-xl cursor-pointer hover:bg-rose-700 transition duration-300 ease-in-out mt-2"
+                                    className={`${confirmLogout ? "animate-fadeIn" : ""} absolute top-full left-0 w-full text-center py-2 bg-rose-600 text-white rounded-xl cursor-pointer hover:bg-rose-700 transition duration-300 ease-in-out mt-2`}
                                 >
                                     Logout
                                 </div>
@@ -115,9 +115,9 @@ export default function Header({ session }) {
 
             {isDrawerOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end">
-                    <div className="w-64 bg-gray-800 h-full shadow-lg p-4 transform translate-x-0 animate-slide-in">
+                    <div className="w-64 bg-gray-800 h-full shadow-lg p-4 transform animate-slide-in">
                         <div className="flex justify-end">
-                            <button className="text-white text-lg" onClick={() => setIsDrawerOpen(false)}>✖</button>
+                            <button className=" text-lg text-gray-300 hover:text-blue-400 transition" onClick={() => setIsDrawerOpen(false)}>✖</button>
                         </div>
                         <div className="mt-4 flex flex-col space-y-4">
                             {navItems.map((item, index) => (
@@ -132,7 +132,7 @@ export default function Header({ session }) {
                                     <p className="ml-2">Login</p>
                                 </div>
                             ) : (
-                                <div onClick={handleSignOut} className="flex items-center text-gray-300 cursor-pointer hover:text-blue-400 transition">
+                                <div onClick={handleSignOut} className="flex items-center text-gray-300 cursor-pointer hover:text-rose-600 transition">
                                     <FontAwesomeIcon icon={faArrowRightToBracket} className="w-6" />
                                     <p className="ml-2">Logout</p>
                                 </div>
@@ -141,20 +141,6 @@ export default function Header({ session }) {
                     </div>
                 </div>
             )}
-
-            <style jsx global>{`
-                @keyframes slide-in {
-                    from {
-                        transform: translateX(100%);
-                    }
-                    to {
-                        transform: translateX(0);
-                    }
-                }
-                .animate-slide-in {
-                    animation: slide-in 0.3s ease-out forwards;
-                }
-            `}</style>
         </div>
     );
 }
