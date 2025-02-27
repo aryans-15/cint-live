@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from 'next/headers';
-import { Inter, Roboto, Fira_Mono } from "next/font/google";
+import { Inter, Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -12,7 +12,7 @@ const roboto = Roboto({
   variable: "--font-roboto",
   weight: "400"
 });
-const firaMono = Fira_Mono({
+const firaMono = Roboto_Mono({
   subsets: ["latin"],
   variable: "--font-fira-mono",
   weight: "400",
@@ -43,7 +43,9 @@ export default async function RootLayout({
       >
         <div className="flex flex-col h-full w-full p-2">
           <Header session={session} />
-          {children}
+          <div className="flex h-full w-full py-6 px-8">
+            {children}
+          </div>
         </div>
       </body>
     </html>

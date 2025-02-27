@@ -107,7 +107,7 @@ export default {
 		fontFamily: {
 			sans: ['Inter', 'Roboto', 'sans-serif'],
 			body: ['Roboto', 'Open Sans', 'sans-serif'],
-			mono: ['Fira Mono', 'monospace']
+			mono: ['Roboto Mono', 'sans-serif']
 		}
 	},
 	variants: {
