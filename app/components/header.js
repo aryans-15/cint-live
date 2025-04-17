@@ -1,11 +1,11 @@
 "use client"
 
+import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faChartSimple, faCode, faArrowRightToBracket, faBars } from "@fortawesome/free-solid-svg-icons";
 import { useUserSession } from '@/hooks/use-user-session';
-import { signInWithGoogle, signOutWithGoogle } from '@/libs/firebase/auth';
-import { createSession, removeSession } from '@/actions/auth-actions';
+import { handleSignIn, handleSignOut } from '@/utils/auth';
 import { useAuthUser } from '@/hooks/use-auth-user';
 
 export default function Header({ session }) {
@@ -14,18 +14,6 @@ export default function Header({ session }) {
     const user = useAuthUser(userSessionId);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [confirmLogout, setConfirmLogout] = useState(false);
-
-    const handleSignIn = async () => {
-        const uid = await signInWithGoogle();
-        if (uid) {
-            await createSession(uid);
-        }
-    };
-
-    const handleSignOut = async () => {
-        await signOutWithGoogle();
-        await removeSession();
-    };
 
     useEffect(() => {
         const handleClick = (event) => {
@@ -40,9 +28,9 @@ export default function Header({ session }) {
     }, [confirmLogout]);
 
     const navItems = [
-        { icon: faHouse, label: "Home" },
-        { icon: faChartSimple, label: "Scoreboard" },
-        { icon: faCode, label: "Challenges" }
+        { icon: faHouse, label: "Home", href: "/" },
+        { icon: faChartSimple, label: "Scoreboard", href: "/scoreboard" },
+        { icon: faCode, label: "Challenges", href: "/challenges" }
     ];
 
     return (
@@ -53,13 +41,17 @@ export default function Header({ session }) {
 
             <div className="hidden md:flex grow ml-8">
                 {navItems.map((item, index) => (
-                    <div key={index} className="relative py-2 px-4 flex items-center text-gray-300 rounded-xl cursor-pointer hover:bg-gray-700 transition duration-300 ease-in-out">
+                    <Link
+                        key={index}
+                        href={item.href}
+                        className="relative py-2 px-4 flex items-center text-gray-300 rounded-xl hover:bg-gray-700 transition duration-300 ease-in-out"
+                    >
                         <div className="w-5 flex justify-center">
-                            <FontAwesomeIcon icon={item.icon} />
+                        <FontAwesomeIcon icon={item.icon} />
                         </div>
                         <p className="ml-2">{item.label}</p>
                         <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 transition-transform duration-300 ease-in-out hover:scale-x-100"></div>
-                    </div>
+                    </Link>
                 ))}
             </div>
 

@@ -5,17 +5,17 @@ import {
     onAuthStateChanged as _onAuthStateChanged,
 } from 'firebase/auth';
 
-import { firebaseAuth } from './config';
+import { auth } from './config';
 
 export function onAuthStateChanged(callback) {
-    return _onAuthStateChanged(firebaseAuth, callback);
+    return _onAuthStateChanged(auth, callback);
 }
 
 export async function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
 
     try {
-        const result = await signInWithPopup(firebaseAuth, provider);
+        const result = await signInWithPopup(auth, provider);
 
         if (!result || !result.user) {
             throw new Error('Google sign in failed');
