@@ -13,12 +13,15 @@ export default function Footer() {
             </div>
 
             <div>
-                Built by <span> </span>
-                <a href="https://github.com/aryans-15/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition duration-300 hover:underline">
+                Built by {' '}
+                <a href="https://aryans.dev/" target="_blank" rel="noopener noreferrer">
                     Aryan Sharma
-                </a> and <span> </span>
-                <a href="https://github.com/kyracoding/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition duration-300 hover:underline">
-                Kyra Leung
+                </a> and {' '}
+                <a href="https://github.com/kyracoding/" target="_blank" rel="noopener noreferrer">
+                    Kyra Leung
+                </a> for {' '}
+                <a href="https://chspyoneers.com" target="_blank" rel="noopener noreferrer">
+                    CHS Pyoneers
                 </a>
             </div>
         </div>
