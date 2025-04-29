@@ -30,7 +30,7 @@ export default function Home() {
       timeZoneName: "short"
     });
     return `${month} ${day}${ordinal}, ${year}, ${timeStr}`;
-  }  
+  }
 
   function countdown() {
     const now = new Date();

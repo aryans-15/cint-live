@@ -31,6 +31,7 @@ export const metadata: Metadata = {
 
 import Header from "@/app/components/header";
 import Footer from "@/app/components/footer";
+import Notifier from "@/app/components/notifier";
 import { SESSION_COOKIE_NAME } from "@/constants";
 
 export default async function RootLayout({
@@ -42,6 +43,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className="bg-gray-800 font-sans antialiased h-screen w-screen">
         <div className="flex flex-col h-full w-full p-2">
+          <Notifier />
           <Header session={session} />
           <main className="flex-grow">{children}</main>
           <Footer />

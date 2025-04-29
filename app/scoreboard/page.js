@@ -1,4 +1,4 @@
-'"use client";'
+"use client"
 
 function getFakeTeams(prefix) {
   const names = [
