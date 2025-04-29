@@ -26,7 +26,7 @@ config.autoAddCss = false;
 export const metadata: Metadata = {
   title: "CInT 2025",
   description:
-    "Live competition platform for the Centennial Informatics Tournament (CInT)",
+    "Live competition platform for Centennial's Informatics Tournament (CInT)",
 };
 
 import Header from "@/app/components/header";

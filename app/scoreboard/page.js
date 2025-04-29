@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 
 function getFakeTeams(prefix) {
   const names = [
@@ -54,6 +55,27 @@ function TeamBoard({ title, teams }) {
 }
 
 export default function Scoreboard() {
+  useEffect(() => {
+    const fetchProblems = async () => {
+      try {
+        const res = await fetch('/api/polygon');
+        const data = await res.json();
+        if (data.problems) {
+          data.problems.forEach(problem => {
+            console.log(problem.name);
+          });
+        } else {
+          console.error(data.error);
+        }
+      } catch (error) {
+        console.error('Error calling API:', error);
+      }
+    };
+  
+    fetchProblems();
+  }, []);
+  
+  
   return (
     <div className="max-w-8xl mx-auto mt-10 px-6 font-mono text-white">
       <div className="flex flex-col lg:flex-row gap-8">

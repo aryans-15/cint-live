@@ -113,10 +113,15 @@ export default function Header({ session }) {
                         </div>
                         <div className="mt-4 flex flex-col space-y-4">
                             {navItems.map((item, index) => (
-                                <div key={index} className="flex items-center text-gray-300 cursor-pointer hover:text-blue-400 transition">
+                                <Link
+                                    key={index}
+                                    href={item.href}
+                                    className="flex items-center text-gray-300 cursor-pointer hover:text-blue-400 transition"
+                                    onClick={() => setIsDrawerOpen(false)}
+                                >
                                     <FontAwesomeIcon icon={item.icon} className="w-6" />
                                     <p className="ml-2">{item.label}</p>
-                                </div>
+                                </Link>
                             ))}
                             {!userSessionId ? (
                                 <div onClick={handleSignIn} className="flex items-center text-gray-300 cursor-pointer hover:text-blue-400 transition">

@@ -1,4 +1,3 @@
-// utils/auth.js
 import { signInWithGoogle, signOutWithGoogle } from '@/libs/firebase/auth';
 import { createSession, removeSession } from '@/actions/auth-actions';
 
