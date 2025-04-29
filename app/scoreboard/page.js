@@ -1,5 +1,4 @@
-"use client";
-import { useEffect } from "react";
+"use client"
 
 function getFakeTeams(prefix) {
   const names = [
@@ -19,7 +18,7 @@ const advancedTeams = getFakeTeams("");
 function TeamBoard({ title, teams }) {
   return (
     <div className="flex-1 p-6 bg-gray-900 rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold text-white mb-8 text-center">{title}</h2>
+      <h2 className="text-2xl font-bold text-white mb-8  text-center">{title}</h2>
       <div className="grid grid-cols-3 text-gray-300 font-bold text-sm border-b border-gray-700 pb-2 mb-2">
         <div className="text-left">Place</div>
         <div className="text-left ml-1">Team</div>
@@ -77,7 +76,7 @@ export default function Scoreboard() {
   
   
   return (
-    <div className="max-w-8xl mx-auto mt-10 px-6 font-mono text-white">
+    <div className="w-full justify-center mt-10 px-6 font-mono text-white">
       <div className="flex flex-col lg:flex-row gap-8">
         <TeamBoard title="Beginner Division" teams={beginnerTeams} />
         <TeamBoard title="Advanced Division" teams={advancedTeams} />

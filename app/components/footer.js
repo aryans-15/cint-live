@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-        <div className="flex w-full h-10 px-3 items-center justify-between bg-gray-800 text-gray-300">
+        <div className="flex w-full h-10 px-3 pt-2 items-center justify-between bg-gray-800 text-gray-300">
             <div>
                 <a
                     href="https://cint.info"

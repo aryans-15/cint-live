@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faChartSimple, faCode, faArrowRightToBracket, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faChartSimple, faCode, faArrowRightToBracket, faBars, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { useUserSession } from '@/hooks/use-user-session';
 import { handleSignIn, handleSignOut } from '@/utils/auth';
 import { useAuthUser } from '@/hooks/use-auth-user';
@@ -47,7 +47,7 @@ export default function Header({ session }) {
                         className="relative py-2 px-4 flex items-center text-gray-300 rounded-xl hover:bg-gray-700 transition duration-300 ease-in-out"
                     >
                         <div className="w-5 flex justify-center">
-                        <FontAwesomeIcon icon={item.icon} />
+                            <FontAwesomeIcon icon={item.icon} />
                         </div>
                         <p className="ml-2">{item.label}</p>
                         <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 transition-transform duration-300 ease-in-out hover:scale-x-100"></div>
@@ -65,36 +65,43 @@ export default function Header({ session }) {
                     </div>
                 ) : (
                     user && (
-                        <div className="hidden md:flex flex-col text-gray-300 relative">
+                        <div className="hidden md:flex flex-row text-gray-300 relative">
+                            <div className="hidden md:flex grow ml-8">
+                                <Link
+                                    href="/team"
+                                    className="relative py-2 px-4 flex items-center text-gray-300 rounded-xl hover:bg-gray-700 transition duration-300 ease-in-out"
+                                >
+                                    <div className="w-5 flex justify-center">
+                                        <FontAwesomeIcon icon={faUsers} />
+                                    </div>
+                                    <p className="ml-2">Your team</p>
+                                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 transition-transform duration-300 ease-in-out hover:scale-x-100"></div>
+                                </Link>
+                            </div>
                             <div className="py-2 px-4 flex items-center rounded-xl cursor-pointer hover:bg-gray-700 transition duration-300 ease-in-out" onClick={() => setConfirmLogout(!confirmLogout)}>
                                 {user.photoURL ? (
-                                    <img 
-                                        src={user.photoURL} 
-                                        alt="User Avatar" 
+                                    <img
+                                        src={user.photoURL}
+                                        alt="User Avatar"
                                         className="h-8 w-8 rounded-full mr-2"
-                                        onError={(e) => {
-                                            e.target.onerror = null;
-                                            e.target.src = '/default-avatar.png';
-                                        }}
                                     />
                                 ) : (
-                                    <img 
-                                        src="/default-avatar.png" 
-                                        alt="Default Avatar" 
-                                        className="h-8 w-8 rounded-full mr-2" 
+                                    <img
+                                        alt="User Avatar"
+                                        className="h-8 w-8 rounded-full mr-2 animate-pulse"
                                     />
                                 )}
                                 <p className="ml-2 font-bold">Hi {user.displayName?.split(" ")[0]}!</p>
+                                {confirmLogout && (
+                                    <div
+                                        ref={elementRef}
+                                        onClick={handleSignOut}
+                                        className={`${confirmLogout ? "animate-fadeIn" : ""} absolute top-full left-0 w-full text-center py-2 bg-rose-600 text-white rounded-xl cursor-pointer hover:bg-rose-700 transition duration-300 ease-in-out mt-2`}
+                                    >
+                                        Logout
+                                    </div>
+                                )}
                             </div>
-                            {confirmLogout && (
-                                <div 
-                                    ref={elementRef} 
-                                    onClick={handleSignOut} 
-                                    className={`${confirmLogout ? "animate-fadeIn" : ""} absolute top-full left-0 w-full text-center py-2 bg-rose-600 text-white rounded-xl cursor-pointer hover:bg-rose-700 transition duration-300 ease-in-out mt-2`}
-                                >
-                                    Logout
-                                </div>
-                            )}
                         </div>
                     )
                 )}

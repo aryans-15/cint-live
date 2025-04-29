@@ -30,7 +30,7 @@ export default function Home() {
       timeZoneName: "short"
     });
     return `${month} ${day}${ordinal}, ${year}, ${timeStr}`;
-  }
+  }  
 
   function countdown() {
     const now = new Date();
@@ -64,7 +64,7 @@ export default function Home() {
 
   return (
     <div className="h-full w-full flex flex-col justify-center items-center p-4 py-6 bg-gray-800 rounded-xl font-mono gap-10">
-      <p className="w-full text-center text-9xl text-gray-100 font-bold">CInT 2025</p>
+      <p className="w-full text-center text-9xl text-gray-100 font-bold">CInT 20225</p>
       {isMounted && (
         <div className="flex flex-col text-4xl text-gray-100 items-center">
           <p className="text-center text-blue-400 font-bold text-4xl">
