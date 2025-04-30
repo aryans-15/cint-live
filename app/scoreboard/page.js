@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 function getFakeTeams(prefix) {
   const names = [
@@ -55,7 +55,7 @@ function TeamBoard({ title, teams }) {
 
 export default function Scoreboard() {
   return (
-    <div className="w-full justify-center mt-10 px-6 font-mono text-white">
+    <div className="w-full justify-center mt-10 px-6 font-mono text-white blur">
       <div className="flex flex-col lg:flex-row gap-8">
         <TeamBoard title="Beginner Division" teams={beginnerTeams} />
         <TeamBoard title="Advanced Division" teams={advancedTeams} />
