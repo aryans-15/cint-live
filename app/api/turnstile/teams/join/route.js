@@ -28,7 +28,7 @@ export async function POST(req) {
         }
 
         const teamData = teamSnap.data();
-        if (teamData.members.length > 3) {
+        if (teamData.members.length >= 3) {
             return new Response(JSON.stringify({ message: 'This team is full already.' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },
@@ -36,13 +36,15 @@ export async function POST(req) {
         }
 
         await db.collection('teams').doc(teamCode).update({
-            members: FieldValue.arrayUnion(userRef)
+            members: FieldValue.arrayUnion(user)
         });
+
+        await user.update({ team: db.collection('teams').doc(teamCode) });
 
         return new Response(null, { status: 200 });
     } catch (err) {
         console.error('Error creating team:', err);
-        return new Response(JSON.stringify({ message: 'Unauthorized' }), {
+        return new Response(JSON.stringify({ message: 'An unexpected error occurred.' }), {
             status: 401,
             headers: { 'Content-Type': 'application/json' },
         });

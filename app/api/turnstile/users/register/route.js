@@ -18,13 +18,13 @@ export async function POST(req) {
                 markedForNegation: false
             });
         }
-
+        
         return new Response(null, {
             status: 200,
         })
     } catch (err) {
         console.error('Error registering user:', err);
-        return new Response(JSON.stringify({ message: 'Unauthorized' }), {
+        return new Response(JSON.stringify({ message: 'An unexpected error occurred.' }), {
             status: 401,
         });
     }

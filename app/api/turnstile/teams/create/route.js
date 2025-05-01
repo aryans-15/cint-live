@@ -54,12 +54,15 @@ export async function POST(req) {
             code,
             members: [creator],
             captain: creator,
+            markedForNegation: false,
         });
+
+        await creator.update({ team: db.collection('teams').doc(code) });
 
         return new Response(null, { status: 200 });
     } catch (err) {
         console.error('Error creating team:', err);
-        return new Response(JSON.stringify({ message: 'Unauthorized' }), {
+        return new Response(JSON.stringify({ message: 'An unexpected error occurred.' }), {
             status: 401,
             headers: { 'Content-Type': 'application/json' },
         });
