@@ -1,4 +1,6 @@
-"use client";
+'use client'
+
+import { useEffect } from "react";
 
 function getFakeTeams(prefix) {
   const names = [
@@ -8,7 +10,7 @@ function getFakeTeams(prefix) {
 
   return names.map((name, i) => ({
     name: `${prefix} ${name}`,
-    points: Math.floor(Math.random() * 20000),
+    points: Math.floor(i * 20000),
   }));
 }
 
@@ -54,6 +56,7 @@ function TeamBoard({ title, teams }) {
 }
 
 export default function Scoreboard() {
+  /*
   useEffect(() => {
     const fetchProblems = async () => {
       try {
@@ -73,10 +76,11 @@ export default function Scoreboard() {
   
     fetchProblems();
   }, []);
+  */
   
   
   return (
-    <div className="w-full justify-center mt-10 px-6 font-mono text-white blur">
+    <div className="w-full justify-center mt-10 px-6 font-mono text-white">
       <div className="flex flex-col lg:flex-row gap-8">
         <TeamBoard title="Beginner Division" teams={beginnerTeams} />
         <TeamBoard title="Advanced Division" teams={advancedTeams} />

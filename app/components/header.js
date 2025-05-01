@@ -34,7 +34,7 @@ export default function Header({ session }) {
     ];
 
     return (
-        <div className="flex w-full h-14 px-2 items-center justify-between">
+        <div className="flex w-full h-14 px-2 items-center justify-between z-50">
             <div className="flex items-center">
                 <img src="/logo.png" alt="Logo" className="h-10 ml-2" />
             </div>

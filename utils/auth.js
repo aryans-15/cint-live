@@ -1,4 +1,4 @@
-import { signInWithGoogle, signOutWithGoogle } from '@/libs/firebase/auth';
+import { signInWithGoogle, signOutWithGoogle } from '@/lib/firebase/auth';
 import { createSession, removeSession } from '@/actions/auth-actions';
 
 export const handleSignIn = async () => {
