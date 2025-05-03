@@ -15,8 +15,9 @@ export async function POST(req) {
             await userRef.set({
                 email: decoded.email,
                 team: null,
-                markedForNegation: false
-            });
+                markedForNegation: false,
+                solved: []
+            }); 
         }
         
         return new Response(null, {

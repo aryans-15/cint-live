@@ -55,6 +55,8 @@ export async function POST(req) {
             members: [creator],
             captain: creator,
             markedForNegation: false,
+            points: 0,
+            solved: []
         });
 
         await creator.update({ team: db.collection('teams').doc(code) });

@@ -68,7 +68,7 @@ export default function Header({ session }) {
                         <div className="hidden md:flex flex-row text-gray-300 relative">
                             <div className="hidden md:flex grow ml-8">
                                 <Link
-                                    href="/team"
+                                    href="/myteam"
                                     className="relative py-2 px-4 flex items-center text-gray-300 rounded-xl hover:bg-gray-700 transition duration-300 ease-in-out"
                                 >
                                     <div className="w-5 flex justify-center">
