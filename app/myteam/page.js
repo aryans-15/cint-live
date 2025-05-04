@@ -123,8 +123,12 @@ export default function TeamInfo() {
         }
 
         const scoreboardRes = await fetch('/api/turnstile/teams/scoreboard')
-        const scoreboardData = await scoreboardRes.json();
-        setTeamIndex(scoreboardData[teamDivision].findIndex(t => t.name === teamDoc.data().name) + 1);
+        if (scoreboardRes.status === 403) {
+          setTeamIndex("?");
+        } else {
+          const scoreboardData = await scoreboardRes.json();
+          setTeamIndex(scoreboardData[teamDivision].findIndex(t => t.name === teamDoc.data().name) + 1);
+        }
         setTeamLoaded(true);
       } else {
         router.push("/findteam");
@@ -185,7 +189,7 @@ export default function TeamInfo() {
 
                 ) : (
                   teamChallenges.map((challenge, index) => (
-                    <div onClick={() => router.push("/challenges/"+challenge.problem_id)}  key={index} className="flex flex-row p-4 w-full rounded justify-start items-center bg-gray-500 hover:bg-gray-800 transition duration-300 cursor-pointer">
+                    <div onClick={() => router.push("/challenges/" + challenge.problem_id)} key={index} className="flex flex-row p-4 w-full rounded justify-start items-center bg-gray-500 hover:bg-gray-800 transition duration-300 cursor-pointer">
                       <p className="font-bold text-xl w-1/3 truncate">{challenge.name}</p>
                       <p className="text-lg w-1/3 truncate">{challenge.points} point{pluralize(challenge.points)}</p>
                       <p className="text-lg w-1/3 truncate" style={{ color: stc(challenge.solvedBy) }} >{challenge.solvedBy}</p>

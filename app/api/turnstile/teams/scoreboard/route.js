@@ -9,6 +9,15 @@ export async function GET(req) {
             advanced: [],
         }
 
+        const game = await db.collection('admin').doc('JELfi8JXl6KtmJ7kbmYe').get();
+        const gameData = game.data();
+        if (gameData.scoreboardenabled !== true) {
+            return new Response(JSON.stringify({ message: 'Scoreboard is not enabled.' }), {
+                status: 403,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
         const snapshot = await db.collection('teams').get();
         const teamPromises = snapshot.docs.map(async doc => {
             const data = doc.data();

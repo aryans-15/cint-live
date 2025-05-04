@@ -52,6 +52,7 @@ export default function ChallengesPage() {
       try {
         const res = await fetch('https://cint-live-backend.onrender.com/problems');
         const data = await res.json();
+        data.sort((a, b) => a.points - b.points);
         setChallenges(data);
         setLoading(false);
       } catch (err) {
@@ -92,7 +93,7 @@ export default function ChallengesPage() {
             <p className="text-lg w-1/6 truncate">Memory Limit</p>
           </div>
 
-          <div className="flex flex-col py-4 gap-4 overflow-auto h-full">
+          <div className="flex flex-col py-4 gap-4 overflow-auto h-full" style={{ maxHeight: 'calc(100vh - 250px)' }} >
             {challenges.map((challenge) => (
               <div
                 key={challenge.id}

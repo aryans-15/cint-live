@@ -150,14 +150,14 @@ export default function ChallengeDetail() {
       {(loading || !teamLoaded) ? (
         <Loader />
       ) : (
-        <div className="p-6 text-white font-mono grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="p-6 text-white font-mono grid grid-cols-2 gap-6 h-full w-full">
           <div className="bg-gray-800 p-4 rounded">
             <h1 className="text-2xl font-bold">{challenge.name}</h1>
             <p className="mt-2 text-sm text-gray-400">
               Points: {challenge.points} | Time Limit: {challenge.time_limit}s | Memory Limit: {challenge.memory_limit}MB
             </p>
             <div
-              className="mt-4 prose prose-invert max-w-none"
+              className="mt-4 prose prose-invert max-w-none overflow-auto" style={{ maxHeight: 'calc(100vh - 250px)' }}
               dangerouslySetInnerHTML={{ __html: renderMarkdownWithLatex(challenge.flavor_text) }}
             />
           </div>
