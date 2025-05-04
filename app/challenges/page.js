@@ -13,6 +13,7 @@ export default function ChallengesPage() {
   const [teamLoaded, setTeamLoaded] = useState(false);
   const [verdicts, setVerdicts] = useState({});
   const [loading, setLoading] = useState(true);
+  const [alreadySolved, setAlreadySolved] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -25,6 +26,10 @@ export default function ChallengesPage() {
         router.push("/findteam");
         return;
       }
+      for (let i=0;i<userDoc.data().solved.length;i++) {
+        alreadySolved.push(userDoc.data().solved[i].challenge_id);
+      }
+
 
       const teamDoc = await getDoc(teamRef);
       if (!teamDoc.exists()) {
@@ -42,6 +47,8 @@ export default function ChallengesPage() {
       } else {
         setTeamLoaded(true);
       }
+
+
     });
 
     return () => unsubscribe();
@@ -93,12 +100,12 @@ export default function ChallengesPage() {
             <p className="text-lg w-1/6 truncate">Memory Limit</p>
           </div>
 
-          <div className="flex flex-col py-4 gap-4 overflow-auto h-full" style={{ maxHeight: 'calc(100vh - 250px)' }} >
+          <div className={`flex flex-col py-4 gap-4 overflow-auto h-full`} style={{ maxHeight: 'calc(100vh - 250px)' }} >
             {challenges.map((challenge) => (
               <div
                 key={challenge.id}
                 onClick={() => router.push(`/challenges/${challenge.id}`)}
-                className={`flex flex-row p-4 w-full rounded justify-start items-center cursor-pointer hover:opacity-90 transition duration-300 ${verdictColor(verdicts[challenge.id])}`}
+                className={`flex flex-row p-4 w-full rounded justify-start items-center cursor-pointer transition duration-300 ${alreadySolved.includes(challenge.id)? "bg-green-400 opacity-50" : "bg-gray-600 hover:bg-gray-700"} ${verdictColor(verdicts[challenge.id])}`}
               >
                 <p className="font-bold text-xl w-1/2 truncate">{challenge.name}</p>
                 <p className="text-lg w-1/6 truncate">{challenge.points}</p>
