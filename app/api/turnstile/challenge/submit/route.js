@@ -13,7 +13,7 @@ export async function POST(req) {
             });
         }
 
-        if (['python', 'c++', 'java'].indexOf(language.toLowerCase()) === -1) {
+        if (['python', 'cpp', 'java'].indexOf(language.toLowerCase()) === -1) {
             return new Response(JSON.stringify({ message: 'Invalid language specified.' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },

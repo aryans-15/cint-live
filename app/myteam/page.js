@@ -125,11 +125,12 @@ export default function TeamInfo() {
         const scoreboardRes = await fetch('/api/turnstile/teams/scoreboard')
         if (scoreboardRes.status === 403) {
           setTeamIndex("?");
+          setTeamLoaded(true);
         } else {
           const scoreboardData = await scoreboardRes.json();
           setTeamIndex(scoreboardData[teamDivision].findIndex(t => t.name === teamDoc.data().name) + 1);
+          setTeamLoaded(true);
         }
-        setTeamLoaded(true);
       } else {
         router.push("/findteam");
       }
