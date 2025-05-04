@@ -27,7 +27,7 @@ export default function ChallengesPage() {
         return;
       }
       for (let i=0;i<userDoc.data().solved.length;i++) {
-        alreadySolved.push(userDoc.data().solved[i].challenge_id);
+        setAlreadySolved((prev) => [...prev, userDoc.data().solved[i].challenge_id]);
       }
 
 
