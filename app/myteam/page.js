@@ -17,7 +17,7 @@ export default function TeamInfo() {
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   let challenges = []
 
-  for (let i = 0; i < Math.floor(Math.random() * 0); i++) {
+  for (let i = 0; i < Math.floor(Math.random() * 12); i++) {
     challenges.push({
       name: `Challenge ${i + 1}`,
       points: Math.floor(Math.random() * 10 + 1) * 100,
@@ -140,7 +140,7 @@ export default function TeamInfo() {
               <div className="flex flex-col p-4 gap-4 overflow-auto h-full">
                 {challenges.length == 0 ? (
                   <div className="flex flex-col items-center justify-center h-full w-full ">
-                    <p className="text-2xl">No hallenges solved (yet)</p>
+                    <p className="text-2xl">No challenges solved (yet)</p>
                     <p className="text-lg">Go solve your first one <a href="/challenges">here</a>!</p>
                   </div>
 

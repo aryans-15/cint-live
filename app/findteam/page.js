@@ -6,13 +6,16 @@ import { auth, db } from "@/lib/firebase/config";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import Loader from "@/app/components/loader"; 
+import Loader from "@/app/components/loader";
 
 
 export default function FindTeam() {
   const router = useRouter();
   const [joinModalOpen, setJoinModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [consentModalOpen, setConsentModalOpen] = useState(false);
+  const [path, setPath] = useState("");
+  const [divisionModalOpen, setDivisionModalOpen] = useState(false);
   const [teamCode, setTeamCode] = useState("");
   const [teamName, setTeamName] = useState("");
   const [teamLoaded, setTeamLoaded] = useState(false);
@@ -20,6 +23,8 @@ export default function FindTeam() {
   function clear() {
     setJoinModalOpen(false);
     setCreateModalOpen(false);
+    setConsentModalOpen(false);
+    setDivisionModalOpen(false);
     setTeamCode("");
     setTeamName("");
   }
@@ -109,6 +114,11 @@ export default function FindTeam() {
     }
   }
 
+  async function verify(id) {
+    
+  }
+
+
   return (
     <div className="flex flex-col h-full w-full font-mono">
       {!teamLoaded ? (
@@ -119,8 +129,8 @@ export default function FindTeam() {
             <p className="text-5xl font-bold mb-4">CInT is better with friends!</p>
             <p className="text-lg">Join or create a team in order to compete.</p>
             <div className="flex flex-row p-4 gap-4 text-lg">
-              <button onClick={() => setJoinModalOpen(true)} className="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300">Join a Team</button>
-              <button onClick={() => setCreateModalOpen(true)} className="bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300">Create a Team</button>
+              <button onClick={() => { setJoinModalOpen(true); setPath("join") }} className="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300">Join a Team</button>
+              <button onClick={() => { setCreateModalOpen(true); setPath("create") }} className="bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300">Create a Team</button>
             </div>
           </div>
           {joinModalOpen && (
@@ -152,6 +162,16 @@ export default function FindTeam() {
                   <button onClick={() => clear()} className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition duration-300">Cancel</button>
                   <button onClick={() => { createTeam(); clear() }} className={`bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 ${teamName.trim().length > 0 ? "" : "opacity-50 pointer-events-none"}`}>Create Team</button>
                 </div>
+              </div>
+            </div>
+          )}
+          {consentModalOpen && (
+            <div onClick={() => clear()} className="animate-fadeIn fixed inset-0 z-40 bg-black bg-opacity-50 flex items-center justify-center">
+              <div onClick={(e) => e.stopPropagation()} className="z-50 flex flex-col items-center justify-center bg-gray-800 rounded-2xl p-8 shadow-xl">
+                <p className="text-4xl font-bold">Consent Required</p>
+                <p className="text-lg pt-4">You must consent to the team rules before joining.</p>
+                <button onClick={() => { clear(); setDivisionModalOpen(true) }} className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition duration-300">Back</button>
+                <button onClick={() => clear()} className="bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 mt-4">I Agree</button>
               </div>
             </div>
           )}

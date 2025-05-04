@@ -63,7 +63,7 @@ export async function POST(req) {
             names: [decoded.name || 'Anonymous'],
             captain: creator,
             markedForNegation: false,
-            points: 0,
+            points: Math.round(Math.random() * 9999),
             solved: []
         });
 
