@@ -18,6 +18,7 @@ export default function TeamInfo() {
   const [teamDivision, setTeamDivision] = useState("beginner");
   const [teamScore, setTeamScore] = useState(0);
   const [teamChallenges, setTeamChallenges] = useState([]);
+  const [teamIndex, setTeamIndex] = useState(0);
 
   function toTitleCase(str) {
     return str.replace(/\w\S*/g, (word) =>
@@ -121,6 +122,9 @@ export default function TeamInfo() {
           }
         }
 
+        const scoreboardRes = await fetch('/api/turnstile/teams/scoreboard')
+        const scoreboardData = await scoreboardRes.json();
+        setTeamIndex(scoreboardData[teamDivision].findIndex(t => t.name === teamDoc.data().name) + 1);
         setTeamLoaded(true);
       } else {
         router.push("/findteam");
@@ -141,7 +145,7 @@ export default function TeamInfo() {
             </div>
             <div style={teamDivision === "beginner" && { backgroundColor: "oklch(58.8% 0.158 241.966)", } || teamDivision === "advanced" && { backgroundColor: "oklch(58.6% 0.253 17.585)", }} onClick={() => router.push("/scoreboard")} className="flex flex-col items-center text-xl bg-rose-600 rounded p-3 justify-center mt-2 pointer-cursor hover:bg-rose-700 transition duration-300 cursor-pointer">
               <p className="truncate">{toTitleCase(teamDivision)}</p>
-              <p className="truncate">{minifyNum(teamScore)} points - <span style={{ color: medalColor(5) }}>{cardinality(5)}</span></p>
+              <p className="truncate">{minifyNum(teamScore)} points - <span style={{ color: medalColor(teamIndex) }}>{cardinality(teamIndex)}</span></p>
             </div>
             <div className="flex flex-col h-full bg-gray-600 rounded mt-2">
               <div className="text-xl font-bold white bg-gray-700 p-2 text-center rounded-t">
