@@ -15,6 +15,7 @@ export default function TeamInfo() {
   const [teamLoaded, setTeamLoaded] = useState(false);
   const [members, setMembers] = useState([]);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [teamDivision, setTeamDivision] = useState("beginner");
   let challenges = []
 
   for (let i = 0; i < Math.floor(Math.random() * 12); i++) {
@@ -23,6 +24,12 @@ export default function TeamInfo() {
       points: Math.floor(Math.random() * 10 + 1) * 100,
       solvedCount: Math.floor(Math.random() * 51)
     });
+  }
+
+  function toTitleCase(str) {
+    return str.replace(/\w\S*/g, (word) =>
+      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    );
   }
 
   function minifyNum(num) {
@@ -86,6 +93,15 @@ export default function TeamInfo() {
             setMembers((prev) => [...prev, undefined]);
           }
         }
+
+        const jerry = teamDoc.data().members;
+        for (const jerrypediatrics of jerry) {
+          const jerrypediatricsSnap = await getDoc(jerrypediatrics);
+          if (jerrypediatricsSnap.exists && jerrypediatricsSnap.get("division") === "advanced") {
+            setTeamDivision("advanced");
+            break;
+          }
+        }
         setTeamLoaded(true);
       } else {
         router.push("/findteam");
@@ -104,7 +120,8 @@ export default function TeamInfo() {
             <div className="flex text-2xl font-bold bg-gray-600 rounded p-3 justify-center">
               <p className="truncate">{team.name}</p>
             </div>
-            <div onClick={() => router.push("/scoreboard")} className="flex text-xl bg-gray-600 rounded p-3 justify-center mt-2 pointer-cursor hover:bg-gray-700 transition duration-300 cursor-pointer">
+            <div style={teamDivision === "beginner" && { backgroundColor: "oklch(58.8% 0.158 241.966)", } || teamDivision === "advanced" && { backgroundColor: "oklch(58.6% 0.253 17.585)", }} onClick={() => router.push("/scoreboard")} className="flex flex-col items-center text-xl bg-rose-600 rounded p-3 justify-center mt-2 pointer-cursor hover:bg-rose-700 transition duration-300 cursor-pointer">
+              <p className="truncate">{toTitleCase(teamDivision)}</p>
               <p className="truncate">{minifyNum(challenges.reduce((sum, challenge) => sum + challenge.points, 0))} points - <span style={{ color: medalColor(5) }}>{cardinality(5)}</span></p>
             </div>
             <div className="flex flex-col h-full bg-gray-600 rounded mt-2">

@@ -12,13 +12,20 @@ function generateTeamCode() {
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { idToken, teamName } = body;
+        const { idToken, teamName, division } = body;
 
         const decoded = await adminAuth.verifyIdToken(idToken);
         const creator = db.collection('users').doc(decoded.uid);
 
         if (teamName.trim().length === 0) {
             return new Response(JSON.stringify({ message: 'Team name cannot be empty.' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
+        if (division !== 'advanced' && division !== 'beginner') {
+            return new Response(JSON.stringify({ message: 'Division is invalid. (You know we can see your ip, right?)' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -67,7 +74,8 @@ export async function POST(req) {
             solved: []
         });
 
-        await creator.update({ team: db.collection('teams').doc(code) });
+
+        await creator.update({ division, team: db.collection('teams').doc(code) });
 
         return new Response(null, { status: 200 });
     } catch (err) {

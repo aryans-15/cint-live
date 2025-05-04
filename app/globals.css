@@ -29,3 +29,16 @@ body {
     @apply text-blue-400 underline;
   }
 }
+
+.advanced {
+  background: bg-rose-600;
+}
+.advanced:hover {
+  background: bg-rose-700;
+}
+.beginner {
+  background: bg-sky-600;
+}
+.beginner:hover {
+  background: bg-sky-700;
+}

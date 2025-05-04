@@ -8,6 +8,9 @@ import { python } from '@codemirror/lang-python';
 import { cpp } from '@codemirror/lang-cpp';
 import { java } from '@codemirror/lang-java';
 import { renderMarkdownWithLatex } from '@/utils/renderMarkdown';
+import { toast } from 'react-toastify';
+import Loader from "@/app/components/loader";
+import { get } from 'http';
 
 export default function ChallengeDetail() {
   const { id } = useParams();
@@ -38,6 +41,7 @@ export default function ChallengeDetail() {
   };
 
   const submitCode = async () => {
+    const toastID = toast.loading('Submitting code...');
     setSubmitting(true);
     setResults([]);
     try {
@@ -52,7 +56,30 @@ export default function ChallengeDetail() {
       });
 
       const data = await res.json();
+      console.log(data.results)
       setResults(data.results);
+      let finalVerdict;
+
+      if (data.results.length === 0) {
+        finalVerdict = 'No Results Yet';
+      } else if (data.results.some(r => r.verdict === 'Runtime Error')) {
+        finalVerdict = 'Runtime Error';
+      } else if (data.results.some(r => r.verdict === 'Time Limit Exceeded')) {
+        finalVerdict = 'Time Limit Exceeded';
+      } else if (data.results.some(r => r.verdict === 'Wrong Answer')) {
+        finalVerdict = 'Wrong Answer';
+      } else if (data.results.every(r => r.verdict === 'Accepted')) {
+        finalVerdict = 'Accepted';
+      } else {
+        finalVerdict = 'Unknown Error';
+      }
+      
+      toast.update(toastID, {
+        render: finalVerdict,
+        type: finalVerdict === 'Accepted' ? 'success' : 'error',
+        isLoading: false,
+        autoClose: 10000
+      });
     } catch (err) {
       console.error('submission failed:', err);
     } finally {
@@ -60,15 +87,7 @@ export default function ChallengeDetail() {
     }
   };
 
-  const getFinalVerdict = () => {
-    if (results.some(r => r.verdict === 'RTE')) return 'Runtime Error';
-    if (results.some(r => r.verdict === 'TLE')) return 'Time Limit Exceeded';
-    if (results.some(r => r.verdict === 'WA')) return 'Wrong Answer';
-    if (results.every(r => r.verdict === 'AC')) return 'Accepted';
-    return 'RTE'; //something probably went wrong. add better handling later tho
-  };
-
-  if (!challenge) return <div className="p-4 text-white">Loading...</div>;
+  if (!challenge) return <Loader />
 
   return (
     <div className="p-6 text-white font-mono grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -82,7 +101,6 @@ export default function ChallengeDetail() {
           dangerouslySetInnerHTML={{ __html: renderMarkdownWithLatex(challenge.flavor_text) }}
         />
       </div>
-
       <div className="space-y-4">
         <div className="flex items-center gap-4">
           <label className="text-lg">Language:</label>
@@ -96,7 +114,6 @@ export default function ChallengeDetail() {
             <option value="java">Java</option>
           </select>
         </div>
-
         <div className="bg-gray-900 rounded">
           <CodeMirror
             value={code}
@@ -106,7 +123,6 @@ export default function ChallengeDetail() {
             onChange={(val) => setCode(val)}
           />
         </div>
-
         <button
           onClick={submitCode}
           disabled={submitting}
@@ -115,13 +131,15 @@ export default function ChallengeDetail() {
           {submitting ? 'Submitting...' : 'Submit Code'}
         </button>
 
-        {results.length > 0 && (
+      </div>
+    </div>
+  );
+}
+/*
+{results.length > 0 && (
           <div className="bg-gray-800 p-4 rounded mt-4">
             <h2 className="text-xl font-bold mb-2">Verdict</h2>
             <p className="text-lg text-yellow-300">{getFinalVerdict()}</p>
           </div>
         )}
-      </div>
-    </div>
-  );
-}
+          */

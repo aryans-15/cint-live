@@ -16,7 +16,8 @@ export async function POST(req) {
                 email: decoded.email,
                 team: null,
                 markedForNegation: false,
-                solved: []
+                solved: [],
+                division: null
             }); 
         }
         

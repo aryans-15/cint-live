@@ -5,7 +5,7 @@ import { FieldValue } from 'firebase-admin/firestore';
 export async function POST(req) {
     try {
         const body = await req.json();
-        let { idToken, teamCode } = body;
+        let { idToken, teamCode, division } = body;
         teamCode = teamCode.trim().toLowerCase();
 
         const decoded = await adminAuth.verifyIdToken(idToken);
@@ -14,6 +14,13 @@ export async function POST(req) {
         const userSnap = await db.collection('teams').where('members', 'array-contains', user).get();
         if (!userSnap.empty) {
             return new Response(JSON.stringify({ message: 'You are already in a team.' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
+        if (division !== 'advanced' && division !== 'beginner') {
+            return new Response(JSON.stringify({ message: 'Division is invalid. (You know we can see your ip, right?)' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -40,7 +47,7 @@ export async function POST(req) {
             names: FieldValue.arrayUnion(decoded.name || 'Anonymous'),
         });
 
-        await user.update({ team: db.collection('teams').doc(teamCode) });
+        await user.update({ division, team: db.collection('teams').doc(teamCode) });
 
         return new Response(null, { status: 200 });
     } catch (err) {
