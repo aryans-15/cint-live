@@ -113,7 +113,6 @@ export default function TeamInfo() {
                 }
               }
             }
-            setTeamChallenges(updatedChallenges);
 
             if (jerrypediatricsSnap.get("division") === "advanced") {
               setTeamDivision("advanced");
@@ -121,7 +120,7 @@ export default function TeamInfo() {
             }
           }
         }
-
+        setTeamChallenges(updatedChallenges);
         const scoreboardRes = await fetch('/api/turnstile/teams/scoreboard')
         if (scoreboardRes.status === 403) {
           setTeamIndex("?");
