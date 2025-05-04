@@ -2,11 +2,39 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Loader from '@/app/components/loader';
+import { auth, db } from '@/lib/firebase/config';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function ChallengesPage() {
   const [challenges, setChallenges] = useState([]);
+  const [teamLoaded, setTeamLoaded] = useState(false);
   const [verdicts, setVerdicts] = useState({});
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      const teamRef = userDoc.data()?.team;
+      if (!teamRef) {
+        router.push("/findteam");
+        return;
+      }
+
+      const teamDoc = await getDoc(teamRef);
+      if (teamDoc.exists()) {
+        setTeamLoaded(true);
+      } else {
+        router.push("/findteam");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
 
   useEffect(() => {
     const fetchChallenges = async () => {
@@ -14,13 +42,14 @@ export default function ChallengesPage() {
         const res = await fetch('https://cint-live-backend.onrender.com/problems');
         const data = await res.json();
         setChallenges(data);
+        setLoading(false);
       } catch (err) {
         console.error("failed to fetch:", err);
       }
     };
 
     //tbd
-    const fetchVerdicts = () => {};
+    const fetchVerdicts = () => { };
     fetchChallenges();
     fetchVerdicts();
   }, []);
@@ -37,31 +66,37 @@ export default function ChallengesPage() {
 
   return (
     <div className="flex flex-col h-full w-full p-4 font-mono">
-      <div className="text-xl font-bold bg-gray-700 p-2 text-center rounded-t">
-        Challenges
-      </div>
-
-      <div className="flex sticky top-0 flex-row py-2 shadow pl-8 pr-8 w-full rounded-b justify-start items-center bg-gray-600">
-        <p className="font-bold text-xl w-1/4 truncate">Name</p>
-        <p className="text-lg w-1/4 truncate">Points</p>
-        <p className="text-lg w-1/4 truncate">Time Limit</p>
-        <p className="text-lg w-1/4 truncate">Memory Limit</p>
-      </div>
-
-      <div className="flex flex-col py-4 gap-4 overflow-auto h-full">
-        {challenges.map((challenge) => (
-          <div
-            key={challenge.id}
-            onClick={() => router.push(`/challenges/${challenge.id}`)}
-            className={`flex flex-row p-4 w-full rounded justify-start items-center cursor-pointer hover:opacity-90 transition duration-300 ${verdictColor(verdicts[challenge.id])}`}
-          >
-            <p className="font-bold text-xl w-1/4 truncate">{challenge.name}</p>
-            <p className="text-lg w-1/4 truncate">{challenge.points}</p>
-            <p className="text-lg w-1/4 truncate">{challenge.time_limit} sec</p>
-            <p className="text-lg w-1/4 truncate">{challenge.memory_limit} MB</p>
+      {(loading || !teamLoaded) ? (
+        <Loader />
+      ) : (
+        <div className="flex flex-col h-full w-full p-4 font-mono">
+          <div className="text-xl font-bold bg-gray-700 p-2 text-center rounded-t">
+            Challenges
           </div>
-        ))}
-      </div>
+
+          <div className="flex sticky top-0 flex-row py-2 shadow px-4 w-full rounded-b justify-start items-center bg-gray-600">
+            <p className="font-bold text-xl w-1/2 truncate">Name</p>
+            <p className="text-lg w-1/6 truncate">Points</p>
+            <p className="text-lg w-1/6 truncate">Time Limit</p>
+            <p className="text-lg w-1/6 truncate">Memory Limit</p>
+          </div>
+
+          <div className="flex flex-col py-4 gap-4 overflow-auto h-full">
+            {challenges.map((challenge) => (
+              <div
+                key={challenge.id}
+                onClick={() => router.push(`/challenges/${challenge.id}`)}
+                className={`flex flex-row p-4 w-full rounded justify-start items-center cursor-pointer hover:opacity-90 transition duration-300 ${verdictColor(verdicts[challenge.id])}`}
+              >
+                <p className="font-bold text-xl w-1/2 truncate">{challenge.name}</p>
+                <p className="text-lg w-1/6 truncate">{challenge.points}</p>
+                <p className="text-lg w-1/6 truncate">{challenge.time_limit} sec</p>
+                <p className="text-lg w-1/6 truncate">{challenge.memory_limit} MB</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

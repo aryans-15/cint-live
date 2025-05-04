@@ -16,15 +16,8 @@ export default function TeamInfo() {
   const [members, setMembers] = useState([]);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [teamDivision, setTeamDivision] = useState("beginner");
-  let challenges = []
-
-  for (let i = 0; i < Math.floor(Math.random() * 12); i++) {
-    challenges.push({
-      name: `Challenge ${i + 1}`,
-      points: Math.floor(Math.random() * 10 + 1) * 100,
-      solvedCount: Math.floor(Math.random() * 51)
-    });
-  }
+  const [teamScore, setTeamScore] = useState(0);
+  const [teamChallenges, setTeamChallenges] = useState([]);
 
   function toTitleCase(str) {
     return str.replace(/\w\S*/g, (word) =>
@@ -95,13 +88,39 @@ export default function TeamInfo() {
         }
 
         const jerry = teamDoc.data().members;
-        for (const jerrypediatrics of jerry) {
+        const names = teamDoc.data().names;
+        let updatedChallenges = [];
+
+        for (let i = 0; i < jerry.length; i++) {
+          const jerrypediatrics = jerry[i];
+          const name = names[i];
+
           const jerrypediatricsSnap = await getDoc(jerrypediatrics);
-          if (jerrypediatricsSnap.exists && jerrypediatricsSnap.get("division") === "advanced") {
-            setTeamDivision("advanced");
-            break;
+
+          if (jerrypediatricsSnap.exists()) {
+            const solved = jerrypediatricsSnap.get("solved") || [];
+
+            for (const challenge of solved) {
+              const existing = updatedChallenges.find(c => c.problem_id === challenge.problem_id);
+              if (!existing) {
+                updatedChallenges.push({ ...challenge, solvedBy: name });
+                setTeamScore(prev => prev + challenge.points);
+              } else {
+                if (new Date(challenge.timeSolved) < new Date(existing.timeSolved)) {
+                  existing.solvedBy = name;
+                  existing.timeSolved = challenge.timeSolved;
+                }
+              }
+            }
+            setTeamChallenges(updatedChallenges);
+
+            if (jerrypediatricsSnap.get("division") === "advanced") {
+              setTeamDivision("advanced");
+              break;
+            }
           }
         }
+
         setTeamLoaded(true);
       } else {
         router.push("/findteam");
@@ -122,7 +141,7 @@ export default function TeamInfo() {
             </div>
             <div style={teamDivision === "beginner" && { backgroundColor: "oklch(58.8% 0.158 241.966)", } || teamDivision === "advanced" && { backgroundColor: "oklch(58.6% 0.253 17.585)", }} onClick={() => router.push("/scoreboard")} className="flex flex-col items-center text-xl bg-rose-600 rounded p-3 justify-center mt-2 pointer-cursor hover:bg-rose-700 transition duration-300 cursor-pointer">
               <p className="truncate">{toTitleCase(teamDivision)}</p>
-              <p className="truncate">{minifyNum(challenges.reduce((sum, challenge) => sum + challenge.points, 0))} points - <span style={{ color: medalColor(5) }}>{cardinality(5)}</span></p>
+              <p className="truncate">{minifyNum(teamScore)} points - <span style={{ color: medalColor(5) }}>{cardinality(5)}</span></p>
             </div>
             <div className="flex flex-col h-full bg-gray-600 rounded mt-2">
               <div className="text-xl font-bold white bg-gray-700 p-2 text-center rounded-t">
@@ -149,25 +168,23 @@ export default function TeamInfo() {
             </div>
             <div className="flex flex-col h-full overflow-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
               <div className="flex sticky top-0 flex-row py-2 shadow pl-8 pr-8 w-full rounded-b justify-start items-center bg-gray-600 ">
-                <p className="font-bold text-xl w-1/4 truncate">Name</p>
-                <p className="text-lg w-1/4 truncate">Points</p>
-                <p className="text-lg w-1/4 truncate">Solve Count</p>
-                <p className="text-lg w-1/4 truncate">Solved By</p>
+                <p className="font-bold text-xl w-1/3 truncate">Name</p>
+                <p className="text-lg w-1/3 truncate">Points</p>
+                <p className="text-lg w-1/3 truncate">Solved By</p>
               </div>
               <div className="flex flex-col p-4 gap-4 overflow-auto h-full">
-                {challenges.length == 0 ? (
+                {teamScore == 0 ? (
                   <div className="flex flex-col items-center justify-center h-full w-full ">
                     <p className="text-2xl">No challenges solved (yet)</p>
                     <p className="text-lg">Go solve your first one <a href="/challenges">here</a>!</p>
                   </div>
 
                 ) : (
-                  challenges.map((challenge, index) => (
-                    <div key={index} className="flex flex-row p-4 w-full rounded justify-start items-center bg-gray-500 hover:bg-gray-800 transition duration-300 cursor-pointer">
-                      <p className="font-bold text-xl w-1/4 truncate">{challenge.name}</p>
-                      <p className="text-lg w-1/4 truncate">{challenge.points} point{pluralize(challenge.points)}</p>
-                      <p className="text-lg w-1/4 truncate">{challenge.solvedCount} solve{pluralize(challenge.solvedCount)}</p>
-                      <p className="text-lg w-1/4 truncate" style={{ color: stc("Kyra Leung") }} >Kyra Leung</p>
+                  teamChallenges.map((challenge, index) => (
+                    <div onClick={() => router.push("/challenges/"+challenge.problem_id)}  key={index} className="flex flex-row p-4 w-full rounded justify-start items-center bg-gray-500 hover:bg-gray-800 transition duration-300 cursor-pointer">
+                      <p className="font-bold text-xl w-1/3 truncate">{challenge.name}</p>
+                      <p className="text-lg w-1/3 truncate">{challenge.points} point{pluralize(challenge.points)}</p>
+                      <p className="text-lg w-1/3 truncate" style={{ color: stc(challenge.solvedBy) }} >{challenge.solvedBy}</p>
                     </div>
                   ))
                 )}

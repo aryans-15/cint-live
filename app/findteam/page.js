@@ -116,7 +116,8 @@ export default function FindTeam() {
         render: "Successfully joined team!",
         type: "success",
         isLoading: false,
-        autoClose: 3000
+        autoClose: 3000,
+        closeButton: true
       });
       router.push("/myteam");
     } else {
@@ -125,7 +126,8 @@ export default function FindTeam() {
         render: data.message || "Failed to join team. Please try again later.",
         type: "error",
         isLoading: false,
-        autoClose: 3000
+        autoClose: 3000,
+        closeButton: true
       });
     }
   }
