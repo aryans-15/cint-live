@@ -49,7 +49,7 @@ export default function TeamInfo() {
   function medalColor(place) {
     if (place == 1) return "oklch(79.5% 0.184 86.047)";
     if (place == 2) return "oklch(70.7% 0.022 261.325)";
-    if (place == 3) return "oklch(55.5% 0.163 48.998)";
+    if (place == 3) return "oklch(40.8% 0.123 38.172)";
   }
 
   function getContrastColor(hex) {

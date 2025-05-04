@@ -1,88 +1,124 @@
 'use client'
 
-function getFakeTeams(prefix) {
-  const names = [
-    "Team 1", "Team 2", "Team 3", "Team 4", "Team 5",
-    "Team 6", "Team 7", "Team 8", "Team 9", "Team 10"
-  ];
-
-  return names.map((name, i) => ({
-    name: `${prefix} ${name}`,
-    points: Math.floor(i * 20000),
-  }));
-}
-
-const beginnerTeams = getFakeTeams("");
-const advancedTeams = getFakeTeams("");
-
-function TeamBoard({ title, teams }) {
-  return (
-    <div className="flex-1 p-6 bg-gray-900 rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold text-white mb-8  text-center">{title}</h2>
-      <div className="grid grid-cols-3 text-gray-300 font-bold text-sm border-b border-gray-700 pb-2 mb-2">
-        <div className="text-left">Place</div>
-        <div className="text-left ml-1">Team</div>
-        <div className="text-right mr-4">Points</div>
-      </div>
-
-      {teams
-        .sort((a, b) => b.points - a.points)
-        .map((team, index) => {
-          const place = index + 1;
-
-          const placeColor = place == 1
-              ? "bg-yellow-500 text-black"
-              : place == 2
-              ? "bg-gray-400 text-black"
-              : place == 3
-              ? "bg-amber-700 text-white"
-              : index % 2 == 0 ? "bg-gray-800" : "bg-gray-700";
-
-          return (
-            <div
-              key={index}
-              className={`grid grid-cols-3 items-center p-3 rounded-lg mb-2 transition duration-200 ${placeColor}`}
-            >
-              <div className="font-bold text-lg">{place}</div>
-              <div>{team.name}</div>
-              <div className="text-right font-bold text-lg">{team.points}</div>
-            </div>
-          );
-        })}
-    </div>
-  );
-}
+import Loader from '@/app/components/loader';
+import { act, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function Scoreboard() {
-  /*
+  const [loading, setLoading] = useState(true);
+  const [scoreboard, setScoreboard] = useState({ combined: [], beginner: [], advanced: [] });
+  const [activeTab, setActiveTab] = useState('combined');
+
   useEffect(() => {
-    const fetchProblems = async () => {
+    async function fetchScoreboard() {
       try {
-        const res = await fetch('/api/polygon');
-        const data = await res.json();
-        if (data.problems) {
-          data.problems.forEach(problem => {
-            console.log(problem.name);
-          });
-        } else {
-          console.error(data.error);
-        }
+        const response = await fetch('/api/turnstile/teams/scoreboard');
+        const data = await response.json();
+        setScoreboard(data);
       } catch (error) {
-        console.error('Error calling API:', error);
+        toast.error('Failed to fetch scoreboard data. Please try again later.');
+      } finally {
+        setLoading(false);
       }
-    };
-  
-    fetchProblems();
+    }
+    fetchScoreboard();
   }, []);
-  */
-  
-  
+
+  function pluralize(num) {
+    if (num == 1) return "";
+    return "s";
+  }
+
+  function medalColor(place) {
+    if (place == 1) return "oklch(79.5% 0.184 86.047)";
+    if (place == 2) return "oklch(70.7% 0.022 261.325)";
+    if (place == 3) return "oklch(40.8% 0.123 38.172)";
+  }
+
   return (
-    <div className="w-full justify-center mt-10 px-6 font-mono text-white">
-      <div className="flex flex-col lg:flex-row gap-8">
-        <TeamBoard title="Beginner Division" teams={beginnerTeams} />
-        <TeamBoard title="Advanced Division" teams={advancedTeams} />
-      </div>
-    </div>
+    <div className="flex flex-col w-full h-full p-4">
+      <div className="flex items-center justify-center h-full">
+        {loading ? (
+          <Loader />
+        ) : (
+          <div className="flex flex-col w-full h-full rounded bg-gray-600">
+            <div className="flex flex-row w-full text-2xl font-bold text-white rounded-t overflow-hidden shadow">
+              <div
+                onClick={() => setActiveTab('combined')}
+                className={`flex w-1/3 items-center justify-center p-4 cursor-pointer transition duration-300 ${activeTab === 'combined' ? 'bg-emerald-400 hover:bg-emerald-600' : 'bg-gray-700 hover:bg-emerald-400'
+                  }`}
+              >
+                <p>Combined</p>
+              </div>
+              <div
+                onClick={() => setActiveTab('beginner')}
+                className={`flex w-1/3 items-center justify-center p-4 cursor-pointer transition duration-300 ${activeTab === 'beginner' ? 'bg-sky-400 hover:bg-sky-600' : 'bg-gray-700 hover:bg-sky-400'
+                  }`}
+              >
+                <p>Beginner</p>
+              </div>
+              <div
+                onClick={() => setActiveTab('advanced')}
+                className={` flex w-1/3 items-center justify-center p-4 cursor-pointer transition duration-300 ${activeTab === 'advanced' ? 'bg-rose-400 hover:bg-rose-600' : 'bg-gray-700 hover:bg-rose-400'
+                  }`}
+              >
+                <p>Advanced</p>
+              </div>
+            </div>
+            <div style={{ maxHeight: 'calc(100vh - 200px)' }} className="flex flex-col h-full overflow-auto">
+              <div className="flex sticky top-0 flex-row py-2 shadow pl-8 pr-8 w-full rounded-b justify-start items-center bg-gray-600">
+                <p className="font-bold text-xl w-1/3 truncate">#</p>
+                <p className="text-lg w-1/3 truncate">Name</p>
+                <p className="text-lg w-1/3 truncate">Points</p>
+                {
+                  activeTab === 'combined' && (
+                    <p className="text-lg w-1/3 truncate">
+                      Division
+                    </p>
+                  )
+                }
+              </div>
+              <div className="flex flex-col p-4 gap-4 overflow-auto h-full">
+                {
+                  (() => {
+                    let currentRank = 1;
+                    let lastPoints = null;
+
+                    return scoreboard[activeTab].map((team, index) => {
+                      const isTie = team.totalPoints === lastPoints;
+                      if (!isTie) currentRank = index + 1;
+
+                      lastPoints = team.totalPoints;
+
+                      return (
+                        <div
+                          key={index}
+                          style={{ backgroundColor: medalColor(currentRank) }}
+                          className="flex flex-row p-4 w-full rounded justify-start items-center bg-gray-500 hover:bg-gray-800 transition duration-300 cursor-pointer"
+                        >
+                          <p className="font-bold text-xl w-1/3 truncate">{currentRank}</p>
+                          <p className="text-lg w-1/3 truncate">{team.name}</p>
+                          <p className="text-lg w-1/3 truncate">
+                            {team.totalPoints} point{pluralize(team.totalPoints)}
+                          </p>
+                          {
+                            activeTab === 'combined' && (
+                              <p className="text-lg w-1/3 truncate">
+                                {team.division.charAt(0).toUpperCase() + team.division.slice(1)}
+                              </p>
+                            )
+                          }
+                        </div>
+                      );
+                    });
+                  })()
+                }
+              </div>
+            </div>
+          </div>
+        )
+        }
+      </div >
+    </div >
   );
 }

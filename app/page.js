@@ -1,5 +1,8 @@
 "use client"
 
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from "@/lib/firebase/config";
+
 import { useState, useEffect } from "react";
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
@@ -9,6 +12,8 @@ export default function Home() {
   const [countdownMinutes, setCountdownMinutes] = useState(0);
   const [countdownSeconds, setCountdownSeconds] = useState(0);
   const [cintTime, setCintTime] = useState("");
+  const [currentTarget, setCurrentTarget] = useState(0);
+  const [countdownType, setCountdownType] = useState("");
 
   function cardinal(num) {
     if (num == 1) {
@@ -34,7 +39,7 @@ export default function Home() {
 
   function countdown() {
     const now = new Date();
-    const event = new Date('2025-05-04T17:30:00Z');
+    const event = new Date(currentTarget);
     let diff = Math.floor((event - now) / 1000);
 
     setCountdownWeeks(Math.floor(diff / (7 * 24 * 60 * 60)));
@@ -52,9 +57,27 @@ export default function Home() {
   }
 
   useEffect(() => {
-    setIsMounted(true);
-    countdown();
+    async function fetchGameData() {
+      const game = await getDoc(doc(db, 'admin', 'JELfi8JXl6KtmJ7kbmYe'));
+      const gameData = game.data();
+      if (Date.now() < gameData.unlockdate.toDate()) {
+        setCurrentTarget(gameData.unlockdate.toDate());
+        setCountdownType("starts in");
+      } else if (Date.now() > gameData.unlockdate.toDate()) {
+        setCurrentTarget(gameData.lockdate.toDate());
+        setCountdownType("ends in");
+      } else {
+        setCountdownType("has ended! Thank you for playing!");
+      }
+      setIsMounted(true);
+    }
+    fetchGameData();
   }, []);
+  useEffect(() => {
+    if (currentTarget) {
+      countdown(); 
+    }
+  }, [currentTarget]);
   useEffect(() => {
     const timer = setTimeout(() => {
       countdown();
@@ -63,16 +86,18 @@ export default function Home() {
   });
 
   return (
-    <div className="h-full w-full flex flex-col justify-center items-center p-4 py-6 bg-gray-800 rounded-xl font-mono gap-10">
+    <div className="h-full w-full flex flex-col justify-center items-center p-4 py-6 bg-gray-800 rounded-xl font-mono gap-2">
       <p className="w-full text-center text-9xl text-gray-100 font-bold">CInT 2025</p>
       {isMounted && (
         <div className="flex flex-col text-4xl text-gray-100 items-center">
           <p className="text-center text-blue-400 font-bold text-4xl">
-            {cintTime}
+            {countdownType}
           </p>
-          <p className="mt-2 text-xl text-gray-300">
-            {countdownWeeks} Week{cardinal(countdownWeeks)}, {countdownDays} Day{cardinal(countdownDays)}, {countdownHours} Hour{cardinal(countdownHours)}, {countdownMinutes} Minute{cardinal(countdownMinutes)}, {countdownSeconds} Second{cardinal(countdownSeconds)}
-          </p>
+          {countdownType !== "has ended! Thank you for playing!" && (
+            <p className="mt-2 text-xl text-gray-300">
+              {countdownWeeks} Week{cardinal(countdownWeeks)}, {countdownDays} Day{cardinal(countdownDays)}, {countdownHours} Hour{cardinal(countdownHours)}, {countdownMinutes} Minute{cardinal(countdownMinutes)}, {countdownSeconds} Second{cardinal(countdownSeconds)}
+            </p>
+          )}
         </div>
       )}
       {!isMounted && (

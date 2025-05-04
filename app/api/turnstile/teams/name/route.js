@@ -27,7 +27,7 @@ export async function POST(req) {
 
     } catch (err) {
         return new Response(JSON.stringify({ message: 'An unexpected error occurred.' }), {
-            status: 401,
+            status: 500,
         });
     }
 }

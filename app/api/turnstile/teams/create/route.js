@@ -68,10 +68,7 @@ export async function POST(req) {
             code,
             members: [creator],
             names: [decoded.name || 'Anonymous'],
-            captain: creator,
-            markedForNegation: false,
-            points: Math.round(Math.random() * 9999),
-            solved: []
+            captain: creator
         });
 
 
@@ -81,7 +78,7 @@ export async function POST(req) {
     } catch (err) {
         console.error('Error creating team:', err);
         return new Response(JSON.stringify({ message: 'An unexpected error occurred.' }), {
-            status: 401,
+            status: 500,
             headers: { 'Content-Type': 'application/json' },
         });
     }

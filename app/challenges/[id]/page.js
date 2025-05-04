@@ -39,10 +39,20 @@ export default function ChallengeDetail() {
       }
 
       const teamDoc = await getDoc(teamRef);
-      if (teamDoc.exists()) {
-        setTeamLoaded(true);
-      } else {
+      if (!teamDoc.exists()) {
         router.push("/findteam");
+      }
+
+      const game = await getDoc(doc(db, 'admin', 'JELfi8JXl6KtmJ7kbmYe'));
+      const gameData = game.data();
+      if (Date.now() < gameData.unlockdate.toDate()) {
+        toast.error('The competition has not started yet.');
+        router.push('/');
+      } else if (Date.now() > gameData.lockdate.toDate()) {
+        toast.error('The competition has ended. Thank you for playing!');
+        router.push('/');
+      } else {
+        setTeamLoaded(true);
       }
     });
     return () => unsubscribe();

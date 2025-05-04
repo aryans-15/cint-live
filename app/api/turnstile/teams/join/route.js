@@ -53,7 +53,7 @@ export async function POST(req) {
     } catch (err) {
         console.error('Error creating team:', err);
         return new Response(JSON.stringify({ message: 'An unexpected error occurred.' }), {
-            status: 401,
+            status: 500,
             headers: { 'Content-Type': 'application/json' },
         });
     }

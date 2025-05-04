@@ -41,7 +41,22 @@ export async function POST(req) {
             });
         }
 
+        const gameRef = await db.collection('admin').doc('JELfi8JXl6KtmJ7kbmYe').get();
+        const gameData = gameRef.data();
 
+        if (Date.now() < gameData.unlockdate.toDate()) {
+            return new Response(JSON.stringify({ message: 'The competition has not started yet.' }), {
+                status: 403,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
+        if (Date.now() > gameData.lockdate.toDate()) {
+            return new Response(JSON.stringify({ message: 'The competition has ended. Thank you for playing!' }), {
+                status: 403,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
 
         const checkChall = await fetch(`https://cint-live-backend.onrender.com/problems/${problem_id}`);
         if (checkChall.status !== 200) {
