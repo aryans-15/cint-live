@@ -20,7 +20,9 @@
     "next": "^15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "string-to-color": "^2.2.2",
+    "typewriter-effect": "^2.22.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect } from "react";
-
 function getFakeTeams(prefix) {
   const names = [
     "Team 1", "Team 2", "Team 3", "Team 4", "Team 5",

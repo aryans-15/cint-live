@@ -24,6 +24,13 @@ export async function POST(req) {
             });
         }
 
+        if (teamName.trim().length > 30) {
+            return new Response(JSON.stringify({ message: 'Team name cannot be longer than 30 characters.' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
         const userSnap = await db.collection('teams').where('members', 'array-contains', creator).get();
         if (!userSnap.empty) {
             return new Response(JSON.stringify({ message: 'You are already in a team.' }), {
@@ -53,6 +60,7 @@ export async function POST(req) {
             name: teamName.trim(),
             code,
             members: [creator],
+            names: [decoded.name || 'Anonymous'],
             captain: creator,
             markedForNegation: false,
             points: 0,

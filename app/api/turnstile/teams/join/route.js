@@ -36,7 +36,8 @@ export async function POST(req) {
         }
 
         await db.collection('teams').doc(teamCode).update({
-            members: FieldValue.arrayUnion(user)
+            members: FieldValue.arrayUnion(user),
+            names: FieldValue.arrayUnion(decoded.name || 'Anonymous'),
         });
 
         await user.update({ team: db.collection('teams').doc(teamCode) });

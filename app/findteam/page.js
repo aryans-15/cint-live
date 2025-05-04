@@ -6,6 +6,7 @@ import { auth, db } from "@/lib/firebase/config";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
+import Loader from "@/app/components/loader"; 
 
 
 export default function FindTeam() {
@@ -29,7 +30,10 @@ export default function FindTeam() {
 
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       const teamRef = userDoc.data()?.team;
-      if (!teamRef) return;
+      if (!teamRef) {
+        setTeamLoaded(true);
+        return;
+      }
 
       const teamDoc = await getDoc(teamRef);
       if (teamDoc.exists()) {
@@ -108,9 +112,7 @@ export default function FindTeam() {
   return (
     <div className="flex flex-col h-full w-full font-mono">
       {!teamLoaded ? (
-        <div className="flex items-center justify-center h-full w-full font-mono text-4xl animate-pulse">
-          <p>Loading...</p>
-        </div>
+        <Loader />
       ) : (
         <div className="flex flex-col h-full w-full relative">
           <div className="flex flex-col items-center justify-center h-full w-full ">
