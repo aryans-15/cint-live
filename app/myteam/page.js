@@ -116,10 +116,10 @@ export default function TeamInfo() {
 
             if (jerrypediatricsSnap.get("division") === "advanced") {
               setTeamDivision("advanced");
-              break;
             }
           }
-        }
+        } 
+        console.log(updatedChallenges)
         setTeamChallenges(updatedChallenges);
         const scoreboardRes = await fetch('/api/turnstile/teams/scoreboard')
         if (scoreboardRes.status === 403) {
